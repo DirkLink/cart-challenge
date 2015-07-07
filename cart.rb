@@ -1,12 +1,8 @@
 require 'pry'
 class Cart
   attr_reader :tax_rate
-  def initialize *rate
-    if rate.empty?
-      @tax_rate = 1.1
-    else
-      @tax_rate = rate.first[:tax_rate]
-    end
+  def initialize rate={}
+      @tax_rate = rate[:tax_rate] || 10
     @contents = []
   end
 
@@ -23,15 +19,12 @@ class Cart
   end
 
   def cost_before_tax
-    total = 0
-    @contents.each do |item|
-      total+=item.price
-    end
-    total
+    @contents.map {|item| item.price}
+    .reduce(:+)
   end
 
   def cost_after_tax
-    cost_before_tax * @tax_rate
+    cost_before_tax * (@tax_rate+100.0)/100.0
   end
 
 
